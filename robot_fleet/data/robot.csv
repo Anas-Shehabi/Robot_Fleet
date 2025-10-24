@@ -1,0 +1,13 @@
+id,name,robot_type,capacity,serial_number
+robot_st001,StorageBot ST001,agv,30,ST001
+robot_sa001,StorageArm SA001,arm,15,SA001
+robot_ld001,LiftDrone LD001,drone,10,LD001
+robot_sm001,StorageMover SM001,agv,25,SM001
+robot_sk001,StackerArm SK001,arm,12,SK001
+robot_sf001,StorageFlyer SF001,drone,8,SF001
+robot_wh001,WarehouseHelper WH001,humanoid,20,WH001
+robot_md001,MedicBot MD001,arm,10,MD001
+robot_hd001,HospitalDrone HD001,drone,7,HD001
+robot_as001,AssistBot AS001,humanoid,18,AS001
+robot_sp001,SupplyMover SP001,agv,22,SP001
+robot_ha001,HealthArm HA001,arm,14,HA001

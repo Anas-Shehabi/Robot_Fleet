@@ -1,0 +1,50 @@
+<odoo>
+    <record id="view_station_form" model="ir.ui.view">
+        <field name="name">station_form</field>
+        <field name="model">station</field>
+        <field name="arch" type="xml">
+            <form string="Station">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="station_type"/>
+                        <field name="company_id"
+                               groups="robot_fleet.group_manager"
+                               widget="many2one"
+                               options="{
+                                   'no_create': True,
+                                   'no_create_edit': True,
+                                   'no_open': True
+                               }"/>
+                        <field name="active" invisible="1" optional="hide"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_station_tree" model="ir.ui.view">
+        <field name="name">station_tree</field>
+        <field name="model">station</field>
+        <field name="arch" type="xml">
+            <tree string="Stations" default_group_by="company_id">
+                <field name="name"/>
+                <field name="station_type"/>
+                <field name="active" invisible="1" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_station_fleet" model="ir.actions.act_window">
+        <field name="name">Stations</field>
+        <field name="res_model">station</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+            id="station_menu_item"
+            name="Stations List"
+            parent="menu_station"
+            action="action_station_fleet"
+            />
+</odoo>

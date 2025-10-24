@@ -1,0 +1,16 @@
+<odoo>
+    <menuitem
+        id="menu_robot_fleet_root"
+        name="Robot Fleet"
+        web_icon="robot_fleet,static/description/icon.png"
+        />
+
+        <menuitem id="menu_task" name="Tasks" parent="menu_robot_fleet_root" sequence="1"/>
+        <menuitem id="menu_robot_fleet" name="Robots" parent="menu_robot_fleet_root" sequence="2"/>
+        <menuitem id="menu_station" name="Stations" parent="menu_robot_fleet_root" sequence="3"/>
+        <menuitem id="menu_configuration" name="Configuration" parent="menu_robot_fleet_root" sequence="4"/>
+        <menuitem id="menu_robot_maintenance" name="Maintenance Records" parent="menu_robot_fleet_root" sequence="5"/>
+
+
+
+</odoo>

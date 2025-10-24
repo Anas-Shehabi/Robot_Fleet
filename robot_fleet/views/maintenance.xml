@@ -1,0 +1,114 @@
+<odoo>
+    <!-- 1. TREE VIEW -->
+    <record id="view_robot_maintenance_tree" model="ir.ui.view">
+        <field name="name">robot.maintenance.tree</field>
+        <field name="model">robot.maintenance</field>
+        <field name="arch" type="xml">
+            <tree string="Maintenance Records" create="false">
+                <field name="robot_id"/>
+                <field name="ref"/>
+                <field name="technician_id"/>
+                <field name="maintenance_type"/>
+                <field name="maintenance_state" class="fw-bold"
+                           decoration-info="maintenance_state == 'not_started'"
+                           decoration-warning="maintenance_state == 'in_progress'"
+                           decoration-success="maintenance_state == 'finished'"/>
+                <field name="downtime_duration"/>
+                <field name="active" invisible="1" optional="hide"/>
+                <field name="description" optional="hide"/>
+                <field name="replaced_parts" optional="hide"/>
+                <field name="date_start" optional="hide"/>
+                <field name="date_end" optional="hide"/>
+                <field name="condition_before" optional="hide"/>
+                <field name="condition_after" optional="hide"/>
+                <field name="next_maintenance_date" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- 2. FORM VIEW -->
+    <record id="view_robot_maintenance_form" model="ir.ui.view">
+        <field name="name">robot.maintenance.form</field>
+        <field name="model">robot.maintenance</field>
+        <field name="arch" type="xml">
+            <form string="Robot Maintenance" create="false">
+                <sheet>
+                    <header groups="robot_fleet.group_maintenance,robot_fleet.group_manager">
+                        <button name="action_start_maintenance" type="object" class="btn-warning" string="Start maintenance" invisible="maintenance_state == 'in_progress'"/>
+                        <button name="action_end_maintenance" type="object" class="btn-success" string="Done" invisible="maintenance_state != 'in_progress'"/>
+                        <field name="maintenance_state" widget="statusbar"  /> <!--options = "{'clickable':1 }" -->
+                    </header>
+                    <div class="oe_title">
+                         <label for="ref"/>
+                         <h1>
+                             <field name="ref"/>
+                         </h1>
+                    </div>
+                    <group string="General Info.">
+                        <field name="robot_id"/>
+                        <field name="date_start" invisible="not date_start"/>
+                        <field name="date_end" invisible="not date_start"/>
+                        <field name="technician_id"/>
+                        <field name="active" invisible="1"/>
+                        <field name="downtime_duration" invisible="not downtime_duration"/>
+                    </group>
+                    <group string="Maintenance Info.">
+                        <field name="maintenance_type"/>
+                        <field name="condition_before"/>
+                        <separator/>
+                        <field name="description"/>
+                        <field name="replaced_parts"/>
+                          <!-- Damage Images Field -->
+                        <field name="damage_images" widget="many2many_binary" options="{'accepted_file_extensions': 'image/*','size_limit': 10}">
+                            <tree>
+                                <field name="name"/>
+                                <field name="datas" filename="name" widget="image"  options="{
+                                       'preview': true,
+                                       'zoom': true,
+                                       'preview_image': 'datas',
+                                       'open_preview_on_click': true,
+                                       'can_download': false
+                                   }"/>
+                                <field name="mimetype" invisible="1"/>
+                            </tree>
+                        </field>
+                        <field name="maintenance_cost"/>
+                        <field name="currency_id"/>
+
+                    </group>
+                    <group string="Others">
+                       <field name="condition_after" groups="robot_fleet.group_maintenance,robot_fleet.group_manager" invisible="maintenance_state != 'finished'"/>
+                       <field name="next_maintenance_date"/>
+                       <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- 3. POPUP ACTION (for your original button) -->
+    <record id="action_open_maintenance_form" model="ir.actions.act_window">
+        <field name="name">Maintenance Entry</field>
+        <field name="res_model">robot.maintenance</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_robot_maintenance_form"/>
+        <field name="context">{'default_robot_id': active_id}</field>
+    </record>
+
+    <!-- 4. TREE VIEW ACTION (for menu) -->
+    <record id="action_robot_maintenance_tree" model="ir.actions.act_window">
+        <field name="name">Maintenance Records</field>
+        <field name="res_model">robot.maintenance</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+            id="maintenance_menu_item"
+            name="Maintenance List"
+            parent="menu_robot_maintenance"
+            action="action_robot_maintenance_tree"
+            />
+</odoo>
+

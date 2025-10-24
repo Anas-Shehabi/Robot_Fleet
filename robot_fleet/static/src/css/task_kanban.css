@@ -1,0 +1,155 @@
+/* Main card styling */
+.oe_kanban_card {
+    background-color: #f8f9fa; /* Light gray background */
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Status colors - left border only */
+.oe_kanban_card.status-new {
+    border-left: 4px solid #28a745;
+}
+
+.oe_kanban_card.status-in-progress {
+    border-left: 4px solid #fd7e14;
+}
+
+.oe_kanban_card.status-done {
+    border-left: 4px solid #dc3545;
+}
+
+/* Status badges */
+.status-badge {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.status-badge.status-new {
+    background-color: #28a745;
+    color: white;
+}
+
+.status-badge.status-in-progress {
+    background-color: #fd7e14;
+    color: white;
+}
+
+.status-badge.status-done {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Layout styles */
+.kanban-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.kanban-content {
+    margin: 8px 0;
+}
+
+.kanban-tags {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.kanban-description {
+    margin-top: 8px;
+    padding: 8px;
+    background-color: #e9ecef; /* Slightly darker gray for description background */
+    border-radius: 4px;
+}
+
+/* Clickable behavior */
+.oe_kanban_global_click {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #f8f9fa;
+}
+
+.oe_kanban_global_click:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+/* static/src/css/kanban.css */
+
+/* Force gray background on all kanban cards */
+.oe_kanban_view .oe_kanban_global_click .oe_kanban_card {
+    background-color: #f8f9fa !important;
+    border: 1px solid #dee2e6 !important; /* Optional: adds light border */
+}
+
+/* Status indicators - left border only */
+.oe_kanban_view .oe_kanban_card.status-new {
+    border-left: 4px solid #28a745 !important;
+}
+
+.oe_kanban_view .oe_kanban_card.status-in-progress {
+    border-left: 4px solid #fd7e14 !important;
+}
+
+.oe_kanban_view .oe_kanban_card.status-done {
+    border-left: 4px solid #dc3545 !important;
+}
+
+/* Status badges */
+.oe_kanban_view .status-badge {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.oe_kanban_view .status-badge.status-new {
+    background-color: #28a745 !important;
+    color: white !important;
+}
+
+.oe_kanban_view .status-badge.status-in-progress {
+    background-color: #fd7e14 !important;
+    color: white !important;
+}
+
+.oe_kanban_view .status-badge.status-done {
+    background-color: #dc3545 !important;
+    color: white !important;
+}
+
+/* Layout improvements */
+.oe_kanban_view .kanban-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.oe_kanban_view .kanban-tags {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.oe_kanban_view .kanban-description {
+    margin-top: 8px;
+    padding: 8px;
+    background-color: #e9ecef !important;
+    border-radius: 4px;
+}
+
+/* Hover effects */
+.oe_kanban_view .oe_kanban_global_click:hover .oe_kanban_card {
+    background-color: #e9ecef !important;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1) !important;
+}
+

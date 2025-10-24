@@ -1,0 +1,260 @@
+<!--<odoo>-->
+<!--    <record id="maintenance_report" model="ir.actions.report">-->
+<!--        <field name="name">Robot Maintenance Report </field>-->
+<!--        <field name="model">robot.maintenance</field>-->
+<!--        <field name="report_type">qweb-html</field>-->
+<!--        <field name="binding_model_id" ref="model_robot_maintenance"/>-->
+<!--        <field name="binding_type">report</field>-->
+<!--        <field name="report_name">robot_fleet.maintenance_report_template</field>-->
+<!--    </record>-->
+
+
+<!--    <template id="maintenance_report_template">-->
+<!--        <t t-call="web.html_container">-->
+<!--            <t t-call="web.external_layout">-->
+<!--                <div class="page">-->
+<!--                    &lt;!&ndash; Report Header &ndash;&gt;-->
+<!--                    <div class="row mb-4">-->
+<!--                        <div class="col-6">-->
+<!--                            <h1>Robot Maintenance Report</h1>-->
+<!--                            <h3 t-field="doc.ref"/>-->
+<!--                        </div>-->
+<!--                        <div class="col-6 text-right">-->
+<!--                            <div class="logo" t-if="company.logo">-->
+<!--                                <img t-att-src="image_data_uri(company.logo)" style="max-height: 100px;"/>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Basic Information Section &ndash;&gt;-->
+<!--                    <div class="row mb-4 border-bottom">-->
+<!--                        <div class="col-12">-->
+<!--                            <h3>Maintenance Details</h3>-->
+<!--                        </div>-->
+<!--                        <div class="col-6">-->
+<!--                            <strong>Robot:</strong> <span t-field="doc.robot_id"/><br/>-->
+<!--                            <strong>Technician:</strong> <span t-field="doc.technician_id"/><br/>-->
+<!--                            <strong>Maintenance Type:</strong> <span t-field="doc.maintenance_type"/><br/>-->
+<!--                        </div>-->
+<!--                        <div class="col-6">-->
+<!--                            <strong>Start Date:</strong> <span t-field="doc.date_start"/><br/>-->
+<!--                            <strong>End Date:</strong> <span t-field="doc.date_end"/><br/>-->
+<!--                            <strong>Downtime:</strong> <span t-field="doc.downtime_duration"/> hours<br/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Status Section &ndash;&gt;-->
+<!--                    <div class="row mb-4 border-bottom">-->
+<!--                        <div class="col-6">-->
+<!--                            <strong>Condition Before:</strong> <span t-field="doc.condition_before"/><br/>-->
+<!--                        </div>-->
+<!--                        <div class="col-6">-->
+<!--                            <strong>Condition After:</strong> <span t-field="doc.condition_after"/><br/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Description Section &ndash;&gt;-->
+<!--                    <div class="row mb-4 border-bottom">-->
+<!--                        <div class="col-12">-->
+<!--                            <h3>Work Performed</h3>-->
+<!--                            <div t-field="doc.description" t-options='{"widget": "html"}'/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Additional Information Section &ndash;&gt;-->
+<!--                    <div class="row mb-4 border-bottom">-->
+<!--                        <div class="col-6">-->
+<!--                            <h3>Additional Notes</h3>-->
+<!--                            <div t-field="doc.notes" t-options='{"widget": "html"}'/>-->
+<!--                        </div>-->
+<!--                        <div class="col-6">-->
+<!--                            <h3>Replaced Parts</h3>-->
+<!--                            <span t-field="doc.replaced_parts"/><br/>-->
+<!--                            <h3 class="mt-2">Maintenance Cost</h3>-->
+<!--                            <span t-field="doc.maintenance_cost"/>-->
+<!--                            <span t-field="doc.currency_id.symbol"/><br/>-->
+<!--                            <h3 class="mt-2">Next Maintenance</h3>-->
+<!--                            <span t-field="doc.next_maintenance_date"/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Damage Images Section &ndash;&gt;-->
+<!--                    <div t-if="doc.damage_images" class="row mb-4">-->
+<!--                        <div class="col-12">-->
+<!--                            <h3>Damage Documentation</h3>-->
+<!--                            <div class="row">-->
+<!--                                <t t-foreach="doc.damage_images" t-as="attachment">-->
+<!--                                    <div class="col-4 mb-3">-->
+<!--                                        <img t-att-src="image_data_uri(attachment.datas)"-->
+<!--                                             class="img-fluid img-thumbnail"-->
+<!--                                             style="max-height: 200px;"/>-->
+<!--                                        <p t-field="attachment.name"/>-->
+<!--                                    </div>-->
+<!--                                </t>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    &lt;!&ndash; Footer &ndash;&gt;-->
+<!--                    <div class="row mt-4">-->
+<!--                        <div class="col-12 text-center">-->
+<!--                            <small class="text-muted">-->
+<!--                                Report generated on <span t-esc="datetime.datetime.now().strftime('%Y-%m-%d %H:%M')"/>-->
+<!--                            </small>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </t>-->
+<!--        </t>-->
+<!--    </template>-->
+<!--</odoo>-->
+
+<odoo>
+    <record id="maintenance_report" model="ir.actions.report">
+        <field name="name">Robot Maintenance Report</field>
+        <field name="model">robot.maintenance</field>
+        <field name="report_type">qweb-html</field>
+        <field name="binding_model_id" ref="model_robot_maintenance"/>
+        <field name="binding_type">report</field>
+        <field name="report_name">robot_fleet.maintenance_report_template</field>
+    </record>
+
+
+    <template id="maintenance_report_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <style>
+                    .report-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 20px;
+                    }
+                    .report-table th {
+                        background-color: #71639e;
+                        color: white;
+                        padding: 10px;
+                        text-align: left;
+                    }
+                    .report-table td {
+                        padding: 8px 10px;
+                        border: 1px solid #ddd;
+                    }
+                    .report-table tr:nth-child(even) {
+                        background-color: #f9f9f9;
+                    }
+                    .section-header {
+                        background-color: #f2f2f2;
+                        font-weight: bold;
+                    }
+                </style>
+
+                <t t-foreach="docs" t-as="rec">
+                    <h1 style="text-align: center;">Robot Maintenance Report</h1>
+
+                    <!-- Main Information Table -->
+                    <table class="report-table">
+                        <tr class="section-header">
+                            <th colspan="4">Maintenance Details</th>
+                        </tr>
+                        <tr>
+                            <td width="25%"><strong>Reference</strong></td>
+                            <td width="25%"><t t-esc="rec.ref"/></td>
+                            <td width="25%"><strong>Robot</strong></td>
+                            <td width="25%"><t t-esc="rec.robot_id.name"/></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Technician</strong></td>
+                            <td><t t-esc="rec.technician_id.name"/></td>
+                            <td><strong>Type</strong></td>
+                            <td>
+                                <t t-esc="dict(rec._fields['maintenance_type'].selection).get(rec.maintenance_type)"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Start Date</strong></td>
+                            <td><t t-esc="rec.date_start"/></td>
+                            <td><strong>End Date</strong></td>
+                            <td><t t-esc="rec.date_end"/></td>
+                        </tr>
+                    </table>
+
+                    <!-- Status and Conditions Table -->
+                    <table class="report-table">
+                        <tr class="section-header">
+                            <th colspan="4">Status and Conditions</th>
+                        </tr>
+                        <tr>
+                            <td width="25%"><strong>Status</strong></td>
+                            <td width="25%">
+                                <t t-esc="dict(rec._fields['maintenance_state'].selection).get(rec.maintenance_state)"/>
+                            </td>
+                            <td width="25%"><strong>Downtime</strong></td>
+                            <td width="25%"><t t-esc="rec.downtime_duration"/> hours</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Condition Before</strong></td>
+                            <td>
+                                <t t-esc="dict(rec._fields['condition_before'].selection).get(rec.condition_before)"/>
+                            </td>
+                            <td><strong>Condition After</strong></td>
+                            <td>
+                                <t t-esc="dict(rec._fields['condition_after'].selection).get(rec.condition_after)"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Work Description -->
+                    <table class="report-table">
+                        <tr class="section-header">
+                            <th>Work Description</th>
+                        </tr>
+                        <tr>
+                            <td><div t-raw="rec.description"/></td>
+                        </tr>
+                    </table>
+
+                    <!-- Additional Information -->
+                    <table class="report-table">
+                        <tr class="section-header">
+                            <th colspan="2">Additional Information</th>
+                        </tr>
+                        <tr>
+                            <td width="50%">
+                                <strong>Notes:</strong><br/>
+                                <div t-raw="rec.notes or 'None'"/>
+                            </td>
+                            <td width="50%">
+                                <strong>Replaced Parts:</strong> <t t-esc="rec.replaced_parts or 'None'"/><br/>
+                                <strong>Cost:</strong> <t t-esc="rec.maintenance_cost or '0'"/> <t t-esc="rec.currency_id.symbol"/><br/>
+                                <strong>Next Maintenance:</strong> <t t-esc="rec.next_maintenance_date or 'Not scheduled'"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Damage Images -->
+                    <t t-if="rec.damage_images">
+                        <table class="report-table">
+                            <tr class="section-header">
+                                <th>Damage Documentation</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+                                        <t t-foreach="rec.damage_images" t-as="attachment">
+                                            <div style="width: 30%;">
+                                                <img t-att-src="image_data_uri(attachment.datas)"
+                                                     style="max-width: 100%; max-height: 150px; border: 1px solid #ddd;"/>
+                                                <p style="margin: 5px 0 0 0; font-size: 12px;"><t t-esc="attachment.name"/></p>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </t>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
+

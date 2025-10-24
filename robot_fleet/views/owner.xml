@@ -1,0 +1,64 @@
+<odoo>
+
+    <record id="task_owner_view_tree" model="ir.ui.view">
+        <field name = "name">owner tree</field>
+        <field name = "model">task.owner</field>
+        <field name = "arch" type = "xml">
+            <tree>
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="address"/>
+                <field name="task_ids" widget="many2many_tags"/>
+                <field name="active" invisible="1" optional="hide"/>
+
+            </tree>
+        </field>
+    </record>
+
+    <!-- customization for the tree view or list / Form view-->
+    <record id="task_owner_view_form" model="ir.ui.view">
+        <field name = "name">owner form</field>
+        <field name = "model">task.owner</field>
+        <field name = "arch" type = "xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                             <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="phone"/>
+                        <field name="address"/>
+                        <field name="company_id"
+                       groups="robot_fleet.group_manager"
+                       widget="res_company"
+                       options="{'no_create': True, 'no_open': True}"/>
+                        <field name="active" invisible="1" optional="hide"/>
+
+                    </group>
+
+                </sheet>
+
+
+            </form>
+        </field>
+    </record>
+
+
+
+    <record id="task_owner_action" model="ir.actions.act_window">
+        <!-- the name for the action appear to the user-->
+        <field name = "name">Owner</field>
+        <field name = "res_model">task.owner</field>
+    </record>
+
+    <menuitem
+        id="task_owner_menu_item"
+        name="Tasks Owners"
+        parent="menu_task"
+        action="task_owner_action"
+        />
+
+</odoo>

@@ -1,0 +1,19 @@
+<odoo>
+    <data>
+        <record id="task_sequence" model="ir.sequence">
+            <field name="name">Task Seq.</field>
+            <field name="code">task_seq</field>
+            <field name="prefix">TSK</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/> <!--  make it global -->
+        </record>
+
+        <record id="task_sequence_maintenance" model="ir.sequence">
+            <field name="name">maintenance Seq.</field>
+            <field name="code">maintenance_seq</field>
+            <field name="prefix">M</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/> <!--  make it global -->
+        </record>
+    </data>
+</odoo>

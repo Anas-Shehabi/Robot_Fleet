@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="robot_fleet_category" model="ir.module.category">
+        <field name="name">Robot Fleet</field>
+    </record>
+      <!-- Security groups definition -->
+    <record id="group_manager" model="res.groups">
+        <field name="name">Fleet Manager</field>
+        <field name="category_id" ref="robot_fleet.robot_fleet_category"/>
+    </record>
+    <record id="group_client" model="res.groups">
+        <field name="name">Client</field>
+        <field name="category_id" ref="robot_fleet.robot_fleet_category"/>
+    </record>
+
+    <record id="group_operator" model="res.groups">
+        <field name="name">Robot Operator</field>
+        <field name="category_id" ref="robot_fleet.robot_fleet_category"/>
+    </record>
+
+    <record id="group_maintenance" model="res.groups">
+        <field name="name">Maintenance Technician</field>
+        <field name="category_id" ref="robot_fleet.robot_fleet_category"/>
+    </record>
+
+
+    <record id="task_user_rule" model="ir.rule">
+          <field name="name">Restrict Clients to Own Records</field>
+          <field name="model_id" ref="model_robot_fleet_task"/>
+          <field name="domain_force">[('create_uid', '=', user.id)]</field>
+          <field name="groups" eval="[(4, ref('robot_fleet.group_client'))]"/>
+    </record>
+
+    <record id="task_read_all_rule" model="ir.rule">
+        <field name="name">Managers and Operators: see all tasks</field>
+        <field name="model_id" ref="model_robot_fleet_task"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[
+          (4,ref('robot_fleet.group_manager')),
+          (4,ref('robot_fleet.group_operator')),
+          (4,ref('robot_fleet.group_maintenance'))
+        ]"/>
+    </record>
+      <!-- Clients can only see their company's robots -->
+    <record id="robot_client_rule" model="ir.rule">
+          <field name="name">Client Robot Access</field>
+          <field name="model_id" ref="model_robot"/>
+          <field name="domain_force">[('company_id', '=', user.company_id.id)]</field>
+          <field name="groups" eval="[(4, ref('robot_fleet.group_client'))]"/>
+    </record>
+
+    <!-- Clients can only see their company's Owners -->
+    <record id="owner_client_rule" model="ir.rule">
+          <field name="name">Client Owner Access</field>
+          <field name="model_id" ref="model_task_owner"/>
+          <field name="domain_force">[('company_id', '=', user.company_id.id)]</field>
+          <field name="groups" eval="[(4, ref('robot_fleet.group_client'))]"/>
+    </record>
+
+        <!-- Regular users see stations from their company -->
+    <record id="station_company_rule" model="ir.rule">
+         <field name="name">Station Company Access</field>
+         <field name="model_id" ref="model_station"/>
+         <field name="domain_force">
+             [('company_id','in', company_ids)]
+         </field>
+         <field name="groups" eval="[
+            (4, ref('robot_fleet.group_client'))]"/>
+    </record>
+
+    <!-- Managers see all stations -->
+    <record id="station_manager_rule" model="ir.rule">
+        <field name="name">Manager Station Access</field>
+        <field name="model_id" ref="model_station"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('robot_fleet.group_manager')),
+                                    (4, ref('robot_fleet.group_operator')),
+                                    (4, ref('robot_fleet.group_maintenance'))]"/>
+    </record>
+
+
+
+</odoo>

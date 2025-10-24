@@ -1,0 +1,52 @@
+<odoo>
+
+    <record id="task_tag_view_tree" model="ir.ui.view">
+        <field name = "name">task tree</field>
+        <field name = "model">task_tag</field>
+        <field name = "arch" type = "xml">
+            <tree>
+                <field name="name"/>
+                <field name="color" widget="color_picker"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- customization for the tree view or list / Form view-->
+    <record id="task_tag_view_form" model="ir.ui.view">
+        <field name = "name">task form</field>
+        <field name = "model">task_tag</field>
+        <field name = "arch" type = "xml">
+            <form>
+                <sheet>
+                    <group>
+                          <group>
+                              <field name="name"/>
+                          </group>
+                          <group>
+                              <field name="color" widget="color_picker"/>
+                          </group>
+                    </group>
+
+                </sheet>
+
+
+            </form>
+        </field>
+    </record>
+
+
+
+    <record id="task_tag_action" model="ir.actions.act_window">
+        <!-- the name for the action appear to the user-->
+        <field name = "name">Tags</field>
+        <field name = "res_model">task_tag</field>
+    </record>
+
+    <menuitem
+        id="task_tag_menu_item"
+        name="Tasks Tags"
+        parent="menu_configuration"
+        action="task_tag_action"
+        />
+
+</odoo>

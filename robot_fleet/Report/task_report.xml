@@ -1,0 +1,438 @@
+<!--<odoo>-->
+<!--    <record id="task_report" model="ir.actions.report">-->
+<!--        <field name="name">Task Report</field>-->
+<!--        <field name="model">robot_fleet.task</field>-->
+<!--        <field name="report_type">qweb-html</field>-->
+<!--        <field name="binding_model_id" ref="model_robot_fleet_task"/>-->
+<!--        <field name="binding_type">report</field>-->
+<!--        <field name="report_name">robot_fleet.task_report_template</field>-->
+<!--    </record>-->
+
+<!--    <template id="task_report_template">-->
+<!--        <t t-call="web.html_container">-->
+<!--            <t t-call="web.external_layout">-->
+<!--                <style>-->
+<!--                    h1 {-->
+<!--                        font-family: Arial, sans-serif;-->
+<!--                        text-align: center;-->
+<!--                        margin-bottom: 20px;-->
+<!--                        color: #333;-->
+<!--                    }-->
+
+<!--                    table {-->
+<!--                        width: 80%;-->
+<!--                        margin: 0 auto;-->
+<!--                        border-collapse: collapse;-->
+<!--                        font-family: Arial, sans-serif;-->
+<!--                        box-shadow: 0 2px 10px rgba(0,0,0,0.1);-->
+<!--                    }-->
+
+<!--                    thead th {-->
+<!--                        background-color: #71639e;-->
+<!--                        color: white;-->
+<!--                        padding: 12px;-->
+<!--                        text-align: left;-->
+<!--                        font-size: 18px;-->
+<!--                    }-->
+
+<!--                    tbody td {-->
+<!--                        padding: 10px 12px;-->
+<!--                        border: 1px solid #ddd;-->
+<!--                        font-size: 16px;-->
+<!--                        color: #333;-->
+<!--                    }-->
+
+<!--                    tbody tr:nth-child(even) {-->
+<!--                        background-color: #f9f9f9;-->
+<!--                    }-->
+
+<!--                    tbody tr:hover {-->
+<!--                        background-color: #f1f1f1;-->
+<!--                    }-->
+
+<!--                    th[colspan="4"] {-->
+<!--                        text-align: center;-->
+<!--                        font-size: 20px;-->
+<!--                    }-->
+
+<!--                    .status-new { color: #3498db; font-weight: bold; }-->
+<!--                    .status-in_progress { color: #f39c12; font-weight: bold; }-->
+<!--                    .status-done { color: #2ecc71; font-weight: bold; }-->
+<!--                </style>-->
+
+<!--                <t t-foreach="docs" t-as="rec">-->
+<!--                    <h1>Task Report</h1>-->
+
+<!--                    &lt;!&ndash; Basic Information &ndash;&gt;-->
+<!--                    <table>-->
+<!--                        <thead>-->
+<!--                            <th colspan="4">Task Information</th>-->
+<!--                        </thead>-->
+<!--                        <tbody>-->
+<!--                            <tr>-->
+<!--                                <td width="25%">Reference</td>-->
+<!--                                <td width="25%"><t t-esc="rec.ref"/></td>-->
+<!--                                <td width="25%">Status</td>-->
+<!--                                <td width="25%">-->
+<!--                                    <span t-att-class="'status-' + rec.status">-->
+<!--                                        <t t-esc="dict(rec._fields['status'].selection).get(rec.status)"/>-->
+<!--                                    </span>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>Task Name</td>-->
+<!--                                <td><t t-esc="rec.name"/></td>-->
+<!--                                <td>Task Owner</td>-->
+<!--                                <td><t t-esc="rec.task_owner_id.name or 'None'"/></td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td>Start Time</td>-->
+<!--                                <td><t t-esc="rec.task_begins or 'Not started'"/></td>-->
+<!--                                <td>End Time</td>-->
+<!--                                <td><t t-esc="rec.task_ends or 'Not completed'"/></td>-->
+<!--                            </tr>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+
+<!--                    &lt;!&ndash; Stations Information &ndash;&gt;-->
+<!--                    <table>-->
+<!--                        <thead>-->
+<!--                            <th colspan="4">Route Information</th>-->
+<!--                        </thead>-->
+<!--                        <tbody>-->
+<!--                            <tr>-->
+<!--                                <td width="25%">Source Station</td>-->
+<!--                                <td width="25%"><t t-esc="rec.source_station_id.name or 'None'"/></td>-->
+<!--                                <td width="25%">Destination Station</td>-->
+<!--                                <td width="25%"><t t-esc="rec.destination_station_id.name or 'None'"/></td>-->
+<!--                            </tr>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+
+<!--                    &lt;!&ndash; Assigned Robots &ndash;&gt;-->
+<!--                    <table>-->
+<!--                        <thead>-->
+<!--                            <th colspan="4">Assigned Robots</th>-->
+<!--                        </thead>-->
+<!--                        <tbody>-->
+<!--                            <t t-foreach="rec.robot_ids" t-as="robot">-->
+<!--                                <tr>-->
+<!--                                    <td width="25%">Robot Name</td>-->
+<!--                                    <td width="25%"><t t-esc="robot.name"/></td>-->
+<!--                                    <td width="25%">Current Status</td>-->
+<!--                                    <td width="25%">-->
+<!--                                        <t t-esc="dict(robot._fields['status_robot'].selection).get(robot.status_robot)"/>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                            </t>-->
+<!--                            <t t-if="not rec.robot_ids">-->
+<!--                                <tr>-->
+<!--                                    <td colspan="4" style="text-align: center;">No robots assigned</td>-->
+<!--                                </tr>-->
+<!--                            </t>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+
+<!--                    &lt;!&ndash; Task Description &ndash;&gt;-->
+<!--                    <table>-->
+<!--                        <thead>-->
+<!--                            <th>Task Description</th>-->
+<!--                        </thead>-->
+<!--                        <tbody>-->
+<!--                            <tr>-->
+<!--                                <td><div t-raw="rec.description or 'No description provided'"/></td>-->
+<!--                            </tr>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+
+<!--                    &lt;!&ndash; Tags &ndash;&gt;-->
+<!--                    <t t-if="rec.tags_ids">-->
+<!--                        <table>-->
+<!--                            <thead>-->
+<!--                                <th>Tags</th>-->
+<!--                            </thead>-->
+<!--                            <tbody>-->
+<!--                                <tr>-->
+<!--                                    <td>-->
+<!--                                        <t t-foreach="rec.tags_ids" t-as="tag">-->
+<!--                                            <span style="display: inline-block; background-color: #eee;-->
+<!--                                                  border-radius: 3px; padding: 3px 8px; margin-right: 5px;">-->
+<!--                                                <t t-esc="tag.name"/>-->
+<!--                                            </span>-->
+<!--                                        </t>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+<!--                            </tbody>-->
+<!--                        </table>-->
+<!--                    </t>-->
+<!--                </t>-->
+<!--            </t>-->
+<!--        </t>-->
+<!--    </template>-->
+<!--</odoo>-->
+
+<odoo>
+    <record id="task_report" model="ir.actions.report">
+        <field name="name">Task Report</field>
+        <field name="model">robot_fleet.task</field>
+        <field name="report_type">qweb-html</field>
+        <field name="binding_model_id" ref="model_robot_fleet_task"/>
+        <field name="binding_type">report</field>
+        <field name="report_name">robot_fleet.task_report_template</field>
+    </record>
+
+    <template id="task_report_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <style>
+                    /* Modern styling */
+                    .report-container {
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        color: #333;
+                        max-width: 1000px;
+                        margin: 0 auto;
+                        padding: 20px;
+                    }
+
+                    .report-header {
+                        text-align: center;
+                        margin-bottom: 30px;
+                        border-bottom: 2px solid #71639e;
+                        padding-bottom: 20px;
+                    }
+
+                    .report-title {
+                        color: #2c3e50;
+                        font-size: 28px;
+                        margin-bottom: 5px;
+                    }
+
+                    .report-ref {
+                        color: #7f8c8d;
+                        font-size: 16px;
+                        font-weight: normal;
+                    }
+
+                    .section {
+                        margin-bottom: 30px;
+                        background: white;
+                        border-radius: 5px;
+                        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+                        overflow: hidden;
+                    }
+
+                    .section-header {
+                        background-color: #71639e;
+                        color: white;
+                        padding: 12px 15px;
+                        font-size: 18px;
+                    }
+
+                    .info-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                    }
+
+                    .info-table tr:nth-child(even) {
+                        background-color: #f9f9f9;
+                    }
+
+                    .info-table td {
+                        padding: 12px 15px;
+                        border-bottom: 1px solid #eee;
+                        vertical-align: top;
+                    }
+
+                    .info-table td:first-child {
+                        width: 30%;
+                        font-weight: 600;
+                        color: #555;
+                    }
+
+                    .status-badge {
+                        display: inline-block;
+                        padding: 4px 10px;
+                        border-radius: 12px;
+                        font-size: 14px;
+                        font-weight: 600;
+                    }
+
+                    .status-new { background-color: #d4e6f7; color: #2c5b8e; }
+                    .status-in_progress { background-color: #f9e9d1; color: #b06e0b; }
+                    .status-done { background-color: #d7f3e0; color: #1a7a3a; }
+
+                    .tag {
+                        display: inline-block;
+                        background-color: #e0e0e0;
+                        border-radius: 15px;
+                        padding: 4px 12px;
+                        margin-right: 8px;
+                        margin-bottom: 8px;
+                        font-size: 14px;
+                    }
+
+                    .robot-list {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 10px;
+                        margin: 0;
+                        padding: 0;
+                        list-style: none;
+                    }
+
+                    .robot-item {
+                        background-color: #f0f7ff;
+                        border: 1px solid #cce0ff;
+                        border-radius: 4px;
+                        padding: 8px 12px;
+                        font-size: 14px;
+                        display: flex;
+                        align-items: center;
+                    }
+
+                    .robot-icon {
+                        margin-right: 8px;
+                        color: #4a89dc;
+                    }
+
+                    .description-box {
+                        padding: 15px;
+                        background-color: #f8f9fa;
+                        border-radius: 5px;
+                        border-left: 4px solid #71639e;
+                    }
+
+                    .datetime {
+                        white-space: nowrap;
+                    }
+                </style>
+
+                <div class="report-container">
+                    <div class="report-header">
+                        <h1 class="report-title">Task Report</h1>
+                        <div class="report-ref">Reference: <t t-esc="docs[0].ref"/></div>
+                    </div>
+
+                    <t t-foreach="docs" t-as="rec">
+                        <!-- Basic Information Section -->
+                        <div class="section">
+                            <div class="section-header">Task Details</div>
+                            <table class="info-table">
+                                <tr>
+                                    <td>Task Name</td>
+                                    <td><t t-esc="rec.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Status</td>
+                                    <td>
+                                        <span t-att-class="'status-badge status-' + rec.status">
+                                            <t t-esc="dict(rec._fields['status'].selection).get(rec.status)"/>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Task Owner</td>
+                                    <td><t t-esc="rec.task_owner_id.name or 'Not assigned'"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Start Time</td>
+                                    <td class="datetime">
+                                        <t t-if="rec.task_begins">
+                                              <t t-set="adjusted_end_time" t-value="rec.task_begins + relativedelta(hours=2)"/>
+                                              <t t-esc="adjusted_end_time.strftime('%d.%m.%Y %H:%M')"/>
+                                        </t>
+                                        <t t-else="">
+                                            Not started
+                                        </t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>End Time</td>
+                                    <td class="datetime">
+                                        <t t-if="rec.task_ends">
+                                              <t t-set="adjusted_end_time" t-value="rec.task_ends + relativedelta(hours=2)"/>
+                                              <t t-esc="adjusted_end_time.strftime('%d.%m.%Y %H:%M')"/>
+                                        </t>
+                                        <t t-else="">
+                                            Not completed
+                                        </t>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Route Information Section -->
+                        <div class="section">
+                            <div class="section-header">Route Information</div>
+                            <table class="info-table">
+                                <tr>
+                                    <td>Source Station</td>
+                                    <td><t t-esc="rec.source_station_id.name or 'Not specified'"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Destination Station</td>
+                                    <td><t t-esc="rec.destination_station_id.name or 'Not specified'"/></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Assigned Robots Section -->
+                        <div class="section">
+                            <div class="section-header">Assigned Robots</div>
+                            <table class="info-table">
+                                <tr>
+                                    <td>Robots</td>
+                                    <td>
+                                        <t t-if="rec.robot_ids">
+                                            <ul class="robot-list">
+                                                <t t-foreach="rec.robot_ids" t-as="robot">
+                                                    <li class="robot-item">
+                                                        <span class="robot-icon">🤖</span>
+                                                        <span><t t-esc="robot.name"/></span>
+                                                    </li>
+                                                </t>
+                                            </ul>
+                                        </t>
+                                        <t t-else="">
+                                            No robots assigned
+                                        </t>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Task Description Section -->
+                        <div class="section">
+                            <div class="section-header">Task Description</div>
+                            <div style="padding: 20px;">
+                                <div t-if="rec.description" t-raw="rec.description" class="description-box"/>
+                                <div t-if="not rec.description" style="color: #999; font-style: italic;">
+                                    No description provided
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tags Section -->
+                        <t t-if="rec.tags_ids">
+                            <div class="section">
+                                <div class="section-header">Tags</div>
+                                <div style="padding: 15px;">
+                                    <t t-foreach="rec.tags_ids" t-as="tag">
+                                        <span class="tag">
+                                            <t t-esc="tag.name"/>
+                                        </span>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
+                    </t>
+
+                    <!-- Footer -->
+                    <div style="text-align: center; margin-top: 40px; color: #7f8c8d; font-size: 14px;">
+                            Report generated on <t t-esc="datetime.datetime.now().strftime('%d.%m.%Y')"/>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,68 @@
+<odoo>
+    <record id="view_robot_form" model="ir.ui.view">
+        <field name="name">robot_fleet_form</field>
+        <field name="model">robot</field>
+        <field name="arch" type="xml">
+            <form string="Robot">
+                <sheet>
+                    <header>
+                    <button
+                        name="%(action_open_maintenance_form)d"
+                        string="Add to Maintenance "
+                        type="action"
+                        class="btn-secondary"
+                        icon="fa-wrench"
+                        groups="robot_fleet.group_manager,robot_fleet.group_maintenance"/>
+                    </header>
+                    <group>
+                        <field name="name"/>
+                        <field name="serial_number"/>
+                        <field name="robot_type"/>
+                        <field name="status_robot"/>
+                        <field name="capacity"/>
+                        <field name="current_location_id"/>
+                        <field name="company_id"
+                       groups="robot_fleet.group_manager"
+                       widget="res_company"
+                       options="{'no_create': True, 'no_open': True}"
+                       />
+                        <field name="current_task_id" options="{'no_create': True}" widget="many2one" domain="[]"/>
+                        <field name="tags_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        <field name="active" invisible="1" optional="hide"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_robot_tree" model="ir.ui.view">
+        <field name="name">robot_fleet_tree</field>
+        <field name="model">robot</field>
+        <field name="arch" type="xml">
+            <tree string="Robots" default_group_by="company_id">
+                <field name="name"/>
+                <field name="robot_type"/>
+                <field name="status_robot"/>
+                <field name="current_location_id"/>
+                <field name="current_task_id"/>
+                <field name="completed_task_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                <field name="tags_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                <field name="active" invisible="1" optional="hide"/>
+
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_robot_fleet" model="ir.actions.act_window">
+        <field name="name">Robots</field>
+        <field name="res_model">robot</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+            id="robots_menu_item"
+            name="Robots List"
+            parent="menu_robot_fleet"
+            action="action_robot_fleet"
+            />
+</odoo>
