@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Robot Movement Simulation</title>
+    <style>
+        body {
+            font-family: Arial;
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        #map {
+            width: 600px;
+            height: 200px;
+            border: 2px solid #333;
+            position: relative;
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+
+        .station {
+            width: 80px;
+            height: 80px;
+            background: #d0e7ff;
+            border: 2px solid #0055aa;
+            border-radius: 8px;
+            text-align: center;
+            padding-top: 28px;
+            position: absolute;
+            font-weight: bold;
+        }
+
+        #stationA { left: 20px; top: 50px; }
+        #stationB { right: 20px; top: 50px; }
+
+        #robot {
+            width: 40px;
+            height: 40px;
+            background: orange;
+            border-radius: 50%;
+            position: absolute;
+            top: 80px;
+            left: 60px;
+            transition: left 2s linear;
+            text-align: center;
+            padding-top: 10px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div>
+    <div id="map">
+        <div id="stationA" class="station">Station A</div>
+        <div id="stationB" class="station">Station B</div>
+        <div id="robot">🤖</div>
+    </div>
+
+    <button onclick="moveRobot()">Start Task</button>
+</div>
+
+<script>
+function moveRobot() {
+    const robot = document.getElementById("robot");
+
+    // Robot starts at A (left: 60px)
+    robot.style.left = "60px";
+
+    setTimeout(() => {
+        // Move robot to B (right side)
+        robot.style.left = "500px";
+    }, 300);
+
+    console.log("Robot moving from Station A to Station B...");
+}
+</script>
+
+</body>
+</html>
