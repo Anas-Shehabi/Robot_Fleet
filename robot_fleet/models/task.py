@@ -1,7 +1,7 @@
 # --------------------------------------------
 # task.py - robot_fleet.task model
 # --------------------------------------------
-
+import requests
 
 from odoo import models, fields,api
 from odoo.exceptions import ValidationError
@@ -70,6 +70,29 @@ class Task(models.Model):
                 raise ValidationError("Please assign Robot/s")
             rec.status = 'in_progress'
             for robot in rec.robot_ids:
+                ############################################
+                if not robot.ip_address:
+                    raise ValidationError(f"Robot {robot.name} has no IP address assigned.")
+
+                payload = {
+                    "task_ref": rec.ref,
+                    "task_id": rec.id
+                }
+
+                url = f"http://{robot.ip_address}:5005//receive_task"
+                #"http://127.0.0.1:5005/receive_task"
+
+                try:
+                    response = requests.post(url, json=payload, timeout=5)
+                    if response.status_code not in (200, 201):
+                        raise ValidationError(
+                            f"Robot {robot.name} returned an error: {response.text}"
+                        )
+                except Exception as e:
+                    raise ValidationError(
+                        f"Could not send task to robot {robot.name}: {str(e)}"
+                    )
+                ###############################################
                 robot.status_robot = 'active'
                 robot.current_task_id = rec.id
                 rec.task_begins = fields.Datetime.now()

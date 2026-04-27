@@ -33,6 +33,11 @@ class Robot(models.Model):
     )
     capacity = fields.Integer(string='Capacity (kg)')
 
+    ip_address = fields.Char(
+        string="Robot IP Address",
+        help="IP address used by Odoo to send commands to the robot"
+    )
+
     def _default_charging_station(self):
         # Find the first station with type 'charging' and return its ID
         charging_station = self.env['station'].search([('station_type', '=', 'charging')], limit=1)
