@@ -113,7 +113,7 @@ class Task(models.Model):
         res = super(Task,self).create(vals)
         if res.ref == 'New':
             res.ref = self.env['ir.sequence'].next_by_code('task_seq')
-        print(res.ref)
+        #print(res.ref)
         return res
 
     """
@@ -135,17 +135,27 @@ class Task(models.Model):
                 robot_names = ', '.join(active_robots)
                 raise ValidationError(f"Cannot assign active robot(s) to a task: {robot_names}")
 
-    @api.constrains('robot_id', 'company_id')
+#    @api.constrains('robot_id', 'company_id')
+#    def _check_robot_company(self):
+#        for task in self:
+#            if task.robot_id and task.robot_id.company_id != task.company_id:
+#                raise ValidationError((
+#                    f"Robot {task.robot_id.name} belongs to company {task.robot_id.company_id.name} "
+ #                   f"while task belongs to {task.company_id.name}. "
+#                    "Please select a robot from the correct company."
+#                ))
+
+    @api.constrains('robot_ids', 'company_id')
     def _check_robot_company(self):
+        """Checks if all robots in the team belong to the same company as the task."""
         for task in self:
-            if task.robot_id and task.robot_id.company_id != task.company_id:
-                raise ValidationError((
-                    f"Robot {task.robot_id.name} belongs to company {task.robot_id.company_id.name} "
-                    f"while task belongs to {task.company_id.name}. "
-                    "Please select a robot from the correct company."
-                ))
-
-
+            for robot in task.robot_ids:  # Loop through the whole team
+                if robot.company_id != task.company_id:
+                    raise ValidationError(
+                        f"Robot {robot.name} belongs to company {robot.company_id.name} "
+                        f"while task belongs to {task.company_id.name}. "
+                        "Please select robots from the correct company."
+                    )
 
     @api.depends('shipment_ids.weight', 'shipment_ids.quantity')
     def _compute_total_shipment_weight(self):

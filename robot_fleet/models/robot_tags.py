@@ -1,6 +1,6 @@
 from odoo import models,fields
 
-class TaskTag(models.Model):
+class RobotTag(models.Model):
     _name = 'robot_tag'
 
     name = fields.Char(string='Tag Name')
