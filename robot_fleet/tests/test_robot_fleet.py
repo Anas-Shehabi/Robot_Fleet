@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from odoo.tests.common import TransactionCase
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
+from datetime import timedelta
+from odoo import fields
 from odoo.tools import mute_logger # Wichtig für SQL-Constraint-Tests
 
 class TestStationModel(TransactionCase):
@@ -349,3 +351,103 @@ class TestTaskOwnerModel(TransactionCase):
         owner_id = owner.id
         owner.unlink()
         self.assertFalse(self.TaskOwner.browse(owner_id).exists())
+
+
+class TestRobotMaintenanceModel(TransactionCase):
+    def setUp(self):
+        super().setUp()
+        self.Maintenance = self.env['robot.maintenance']
+        self.Robot = self.env['robot']
+
+        # Wir brauchen einen Standard-Roboter für die Wartungstests
+        self.robot = self.Robot.create({
+            'name': 'Wartungs-Test-Roboter',
+            'serial_number': 'MNT-001',
+            'status_robot': 'idle',  # Wichtig für action_start_maintenance
+        })
+
+    def test_01_create_defaults_and_sequence(self):
+        """Testet die Erstellung, Standardwerte und Nummernvergabe."""
+        maint = self.Maintenance.create({
+            'robot_id': self.robot.id,
+            'maintenance_type': 'preventive',
+            'description': 'Monatliche Routineprüfung',
+        })
+
+        # Standardwerte prüfen
+        self.assertTrue(maint.active)
+        self.assertEqual(maint.maintenance_state, 'not_started')
+        self.assertEqual(maint.technician_id, self.env.user, "Der aktuelle User sollte Techniker sein.")
+
+        # Nummernkreis-Prüfung
+        self.assertNotEqual(maint.ref, 'New', "Die Sequenz für die Wartung wurde nicht generiert!")
+
+    def test_02_compute_downtime(self):
+        """Testet die korrekte Berechnung der Ausfallzeit (Downtime) in Stunden."""
+        maint = self.Maintenance.create({
+            'robot_id': self.robot.id,
+            'maintenance_type': 'corrective',
+            'description': 'Zeit-Test',
+        })
+
+        #  simulieren einen manuellen Start- und Endzeitpunkt (exakt 2,5 Stunden Differenz)
+        start_time = fields.Datetime.now()
+        end_time = start_time + timedelta(hours=2, minutes=30)
+
+        maint.write({
+            'date_start': start_time,
+            'date_end': end_time
+        })
+
+        # 2 Stunden und 30 Minuten = 2.5 Stunden
+        self.assertEqual(maint.downtime_duration, 2.5, "Die berechnete Ausfallzeit in Stunden stimmt nicht!")
+
+    def test_03_action_start_and_end_maintenance(self):
+        """Testet den erfolgreichen Workflow (Starten und Beenden) und die Roboter-Kopplung."""
+        maint = self.Maintenance.create({
+            'robot_id': self.robot.id,
+            'maintenance_type': 'calibration',
+            'description': 'Workflow-Test',
+        })
+
+        # --- SCHRITT 1: WARTUNG STARTEN ---
+        maint.action_start_maintenance()
+
+        # Prüfen, ob die Startzeit gesetzt wurde und die Status umgeschaltet sind
+        self.assertTrue(maint.date_start)
+        self.assertEqual(maint.maintenance_state, 'in_progress')
+        self.assertEqual(self.robot.status_robot, 'maintenance',
+                         "Der Roboter-Status wurde nicht auf 'maintenance' gesetzt!")
+
+        # --- SCHRITT 2: WARTUNG BEENDEN ---
+        maint.action_end_maintenance()
+
+        # Prüfen, ob die Endzeit gesetzt wurde und alles korrekt abgeschlossen ist
+        self.assertTrue(maint.date_end)
+        self.assertEqual(maint.maintenance_state, 'finished')
+        self.assertEqual(self.robot.status_robot, 'idle',
+                         "Der Roboter wurde nach der Wartung nicht wieder auf 'idle' gesetzt!")
+
+    def test_04_maintenance_user_errors(self):
+        """Testet, ob das System ungültige Wartungs-Starts erfolgreich abblockt."""
+        maint = self.Maintenance.create({
+            'robot_id': self.robot.id,
+            'maintenance_type': 'software_update',
+            'description': 'Fehler-Test',
+        })
+
+        # --- FEHLERFALL 1: Roboter ist nicht 'idle' ---
+        # Wir manipulieren den Roboter, sodass er gerade arbeitet
+        self.robot.status_robot = 'active'
+
+        with self.assertRaises(UserError):
+            maint.action_start_maintenance()
+
+        # --- FEHLERFALL 2: Wartung wurde bereits gestartet ---
+        # Wir setzen den Roboter zurück auf 'idle' und starten die Wartung regulär
+        self.robot.status_robot = 'idle'
+        maint.action_start_maintenance()
+
+        # Versuch, die bereits laufende Wartung NOCHMAL zu starten
+        with self.assertRaises(UserError):
+            maint.action_start_maintenance()

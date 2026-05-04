@@ -102,7 +102,6 @@ class RobotMaintenance(models.Model):
     condition_before = fields.Selection([
         ('good', 'Good'),
         ('minor_fault', 'Minor Fault'),
-        ('major_fault', 'Major Fault'),
         ('critical', 'Critical'),
     ], string='Condition Before Maintenance')
 
@@ -139,5 +138,5 @@ class RobotMaintenance(models.Model):
         res = super(RobotMaintenance,self).create(vals)
         if res.ref == 'New':
             res.ref = self.env['ir.sequence'].next_by_code('maintenance_seq')
-        print(res.ref)
+        #print(res.ref)
         return res
